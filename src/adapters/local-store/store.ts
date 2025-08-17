@@ -18,7 +18,7 @@ const readData = async () => {
 		const data = await fs.readFile(dbPath, "utf-8");
 		return JSON.parse(data);
 	} catch (error: unknown) {
-		if (error instanceof Error && 'code' in error && error.code === "ENOENT") {
+		if (error instanceof Error && "code" in error && error.code === "ENOENT") {
 			await fs.writeFile(dbPath, JSON.stringify({}));
 			return {};
 		}
@@ -56,7 +56,9 @@ export const updateItem = async <T>(
 	updatedItem: Partial<T>,
 ) => {
 	const data = await readData();
-	const itemIndex = data[collection]?.findIndex((item: DatabaseRecord) => item.id === id);
+	const itemIndex = data[collection]?.findIndex(
+		(item: DatabaseRecord) => item.id === id,
+	);
 	if (itemIndex > -1) {
 		data[collection][itemIndex] = {
 			...data[collection][itemIndex],
@@ -70,7 +72,9 @@ export const updateItem = async <T>(
 
 export const deleteItem = async (collection: string, id: string) => {
 	const data = await readData();
-	const itemIndex = data[collection]?.findIndex((item: DatabaseRecord) => item.id === id);
+	const itemIndex = data[collection]?.findIndex(
+		(item: DatabaseRecord) => item.id === id,
+	);
 	if (itemIndex > -1) {
 		data[collection].splice(itemIndex, 1);
 		await writeData(data);
