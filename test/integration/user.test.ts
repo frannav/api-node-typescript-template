@@ -1,7 +1,19 @@
 import assert from "node:assert";
-import { after, before, describe, test } from "node:test";
 import type { Server } from "node:http";
+import { after, before, describe, test } from "node:test";
 import app from "../../src/app.js";
+
+// Types for API responses
+interface UserResponse {
+	id: string;
+	name: string;
+	email: string;
+	passwordHash?: string;
+}
+
+interface ErrorResponse {
+	errors: Array<{ message: string; field?: string }>;
+}
 
 // Simple integration test without complex mocking for now
 
@@ -34,7 +46,7 @@ describe("User Integration Tests", () => {
 				body: JSON.stringify(userData),
 			});
 
-			const responseBody = await response.json() as any;
+			const responseBody = (await response.json()) as UserResponse;
 
 			// Assertions using Node.js assert
 			assert.strictEqual(response.status, 201);
@@ -54,7 +66,7 @@ describe("User Integration Tests", () => {
 				body: JSON.stringify(incompleteUserData),
 			});
 
-			const responseBody = await response.json() as any;
+			const responseBody = (await response.json()) as ErrorResponse;
 
 			assert.strictEqual(response.status, 400);
 			assert.ok(responseBody.errors);
